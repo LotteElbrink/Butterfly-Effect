@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdeling Coaches – Butterfly Effect</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:       #E8651A;
+    --orange-mid:   #F5A96A;
+    --orange-bg:    #FEF0E6;
+    --green:        #4CAF7D;
+    --green-light:  #D6F0E3;
+    --sand:         #FDF6EF;
+    --dark:         #2B2B2B;
+    --mid:          #888;
+    --border:       #E8D5C4;
+    --white:        #ffffff;
+    --col-w:        148px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', Arial, sans-serif;
+    background: var(--sand);
+    color: var(--dark);
+    padding: 24px 20px 32px;
+    min-width: 1100px;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--orange);
+  }
+  .logo {
+    width: 40px; height: 40px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo svg { width: 22px; height: 22px; }
+  .header h1 { font-size: 17px; font-weight: 900; color: var(--orange); letter-spacing: -.3px; }
+  .header p  { font-size: 10px; font-weight: 700; color: var(--mid); text-transform: uppercase; letter-spacing: 1px; margin-top: 1px; }
+
+  /* ── Main grid ── */
+  .grid {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: var(--col-w);
+    flex-shrink: 0;
+  }
+
+  /* ── Coach circle ── */
+  .circle {
+    width: 86px; height: 86px;
+    border-radius: 50%;
+    border: 2.5px solid var(--orange);
+    background: var(--white);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 8px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .circle.new  { border-color: var(--green); background: var(--green-light); }
+  .circle.open { border-style: dashed; border-color: var(--mid); background: var(--white); }
+
+  .circle .name  { font-size: 13px; font-weight: 900; color: var(--dark); line-height: 1.15; }
+  .circle .hours { font-size: 10px; font-weight: 700; color: var(--orange); margin-top: 2px; }
+  .circle.new .hours  { color: var(--green); }
+  .circle.open .hours { color: var(--mid); }
+  .circle .sub   { font-size: 8.5px; color: var(--mid); margin-top: 2px; line-height: 1.3; text-align: center; }
+
+  .badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--green); color: white;
+    font-size: 7.5px; font-weight: 800;
+    border-radius: 8px; padding: 2px 5px;
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+
+  /* ── Community cards ── */
+  .card {
+    width: 100%;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-left: 3px solid var(--orange-mid);
+    border-radius: 5px;
+    padding: 6px 8px;
+    text-align: center;
+    line-height: 1.45;
+  }
+  .card.new-card { border-left-color: var(--green); background: var(--green-light); }
+
+  .card .loc   { font-size: 11px; font-weight: 800; color: var(--dark); }
+  .card .place { font-size: 9.5px; color: var(--mid); }
+  .card .count { font-size: 9.5px; font-weight: 700; color: var(--orange); }
+  .card.new-card .count { color: var(--green); }
+
+  .pill {
+    display: inline-block;
+    font-size: 8px; font-weight: 800;
+    background: var(--orange); color: white;
+    border-radius: 10px; padding: 2px 7px;
+    text-transform: uppercase; letter-spacing: .3px;
+    margin-top: 2px;
+  }
+  .pill.green { background: var(--green); }
+
+  /* ── Section divider ── */
+  .section-label {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .9px;
+    color: var(--mid);
+    margin-bottom: 6px;
+    padding-left: 2px;
+  }
+
+  /* ── Bottom row ── */
+  .bottom {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .bottom-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-top: 3px solid var(--orange);
+    border-radius: 5px;
+    padding: 8px 16px;
+    text-align: center;
+    min-width: 110px;
+  }
+  .bottom-card .bname { font-size: 12px; font-weight: 800; color: var(--dark); }
+  .bottom-card .bsub  { font-size: 9.5px; color: var(--mid); margin-top: 3px; line-height: 1.5; }
+
+  /* ── Connector line visual cue ── */
+  .col::before {
+    content: '';
+    display: block;
+    width: 2px; height: 10px;
+    background: var(--border);
+    margin-bottom: -4px;
+    border-radius: 2px;
+    visibility: hidden;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo">
+    <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="11" cy="9" rx="5" ry="7.5" fill="white" opacity=".85"/>
+      <circle cx="11" cy="9" r="2.5" fill="#E8651A"/>
+      <line x1="11" y1="16.5" x2="11" y2="21" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div>
+    <h1>Butterfly Effect</h1>
+    <p>Verdeling Coaches &amp; Gemeenschappen</p>
+  </div>
+</div>
+
+<!-- Coaches grid -->
+<div class="grid">
+
+  <!-- Ankie -->
+  <div class="col">
+    <div class="circle">
+      <span class="name">Ankie</span>
+      <span class="hours">16 uur</span>
+      <span class="sub">v.a. 21 sept.</span>
+    </div>
+    <div class="card">
+      <div class="loc">Goirle</div>
+    </div>
+  </div>
+
+  <!-- Maaike -->
+  <div class="col">
+    <div class="circle">
+      <span class="name">Maaike</span>
+      <span class="hours">20 uur</span>
+    </div>
+    <div class="card">
+      <div class="loc">Hooghe Clock</div>
+      <div class="place">Den Bosch</div>
+      <div class="count">8/10 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Elisabeth</div>
+      <div class="place">Vught</div>
+      <div class="count">5/5 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Theresia</div>
+      <div class="place">Vught</div>
+      <div class="count">5/5 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Kloosterkwartier</div>
+      <div class="place">Veghel</div>
+      <div class="count">8/10 buurtverbinders</div>
+    </div>
+  </div>
+
+  <!-- Jacq -->
+  <div class="col">
+    <div class="circle">
+      <span class="name">Jacq</span>
+      <span class="hours">24 uur</span>
+    </div>
+    <div class="card">
+      <div class="loc">Stek – Den Bosch</div>
+      <div class="count">8/12 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Aerenheem</div>
+      <div class="place">Arnhem</div>
+      <div class="count">1/5 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Landpark Assisie</div>
+      <div class="place">Biezenmortel</div>
+      <div class="count">12 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Wij zijn Zuiderschans</div>
+      <div class="place">Den Bosch</div>
+      <div class="count">11 buurtverbinders</div>
+    </div>
+  </div>
+
+  <!-- Loes -->
+  <div class="col">
+    <div class="circle">
+      <span class="name">Loes</span>
+      <span class="hours">24 uur</span>
+    </div>
+    <div class="card">
+      <div class="loc">Dijk van een wijk</div>
+      <div class="place">Vlijmen</div>
+    </div>
+    <div class="card">
+      <div class="loc">Graafseweg 250</div>
+      <div class="place">Nijmegen</div>
+      <div class="count">1/3</div>
+    </div>
+    <div class="card">
+      <div class="loc">Rondom de Stadsweg</div>
+      <div class="place">Geertruideberg</div>
+      <div class="count">5 buurtverbinders</div>
+    </div>
+    <div class="card">
+      <div class="loc">Vlinderhoven</div>
+    </div>
+  </div>
+
+  <!-- Ine -->
+  <div class="col">
+    <div class="circle new">
+      <span class="badge">nieuw</span>
+      <span class="name">Ine</span>
+      <span class="hours">24 uur</span>
+    </div>
+    <div class="card new-card">
+      <div class="loc">St Jozefsoord-Nuland</div>
+      <div class="count">6 buurtverbinders</div>
+    </div>
+    <div class="card new-card">
+      <div class="loc">Buurtkracht</div>
+      <div class="place">Voorthuizen</div>
+    </div>
+    <div class="card new-card">
+      <div class="loc">Eemgaarde</div>
+      <div class="place">Amersfoort</div>
+      <div class="count">4/10 buurtverbinders</div>
+    </div>
+    <div class="card new-card">
+      <div class="loc">Uiterwaarde</div>
+      <div class="place">Ammerzoden</div>
+    </div>
+  </div>
+
+  <!-- Joyce -->
+  <div class="col">
+    <div class="circle new">
+      <span class="badge">nieuw</span>
+      <span class="name">Joyce</span>
+      <span class="hours">24 uur</span>
+    </div>
+    <div class="card new-card">
+      <div class="loc">Toon</div>
+      <div><span class="pill green">kwartiermakersfase</span></div>
+    </div>
+  </div>
+
+  <!-- Joukje -->
+  <div class="col">
+    <div class="circle open">
+      <span class="name">Joukje</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- In ontwikkeling -->
+<div class="section-label">In ontwikkeling</div>
+<div class="bottom">
+  <div class="bottom-card">
+    <div class="bname">Rijtven</div>
+    <div class="bsub">Deurne</div>
+  </div>
+  <div class="bottom-card">
+    <div class="bname">Pleyade</div>
+    <div class="bsub"><span class="pill">kwartiermakersfase</span></div>
+  </div>
+  <div class="bottom-card">
+    <div class="bname">Coornhert</div>
+    <div class="bsub">Den Haag</div>
+  </div>
+</div>
+
+</body>
+</html>
